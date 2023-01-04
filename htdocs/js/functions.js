@@ -20,16 +20,22 @@ const request_id_input = document.getElementById("request_id");
 const username_input = document.getElementById("username");
 const account_id_input = document.getElementById("account_id");
 
-let ctr=  0;
-let page = 0;
-let items = 0;
-let limit =  0;
-let setPage = 0;
-let totalPage = 0;
+var ctr=  0;
+var page = 0;
+let items =0;
+let limit =  $('#page_limit').val();
+
+let setPage = items / limit
+let totalPage = Math.trunc(items / limit)
+if( setPage % 1){
+    totalPage = totalPage +1
+}
+
 
 function onLoginUser() {
     var username = $('#username').val();  
     var password = $('#password').val();  
+    
     if(username == '' || password == ''){  
         alert('All Fields are required!');
     }else{
@@ -38,6 +44,7 @@ function onLoginUser() {
             method:"POST",  
             data: $('#login_form_user').serialize(),  
             success: function(response) {
+                console.log('check',response);
                 var jsonData = JSON.parse(response);
                 if (jsonData.success){
                     if(jsonData.data.status == 1){
@@ -90,6 +97,7 @@ function onSignUp() {
                     method:"POST",  
                     data: $('#signup_form').serialize(),  
                     success: function(response) {
+                        console.log('check result: ',response);
                         var jsonData = JSON.parse(response);
                         if (jsonData.success){
                             alert(jsonData.success_msg);
@@ -204,7 +212,6 @@ function onViewSubject() {
         success: function(response) {
             localStorage.removeItem("subject_list");
             var jsonData = JSON.parse(response);
-            console.log("subject",response);
             if (jsonData.success){
                 localStorage.setItem("subject_list",response);
                     subject_container = document.querySelector('#thumbnail-container');
@@ -616,7 +623,7 @@ function onViewOtherModule(subject_id,school_id,teacher_id) {
                     <thead>
                         <th>#</th>
                         <th>Uploaded By</th>
-                        <th>Module Tittle</th>
+                        <th>Module Title</th>
                         <th>Module Description</th>
                         <th>Grade Level </th>
                         <th>Action</th>
@@ -628,7 +635,7 @@ function onViewOtherModule(subject_id,school_id,teacher_id) {
                 var template =`
                     <thead>
                         <th>#</th>
-                        <th>Module Tittle</th>
+                        <th>Module Title</th>
                         <th>Module Description</th>
                         <th>Grade Level </th>
                         <th>Action</th>
@@ -734,9 +741,69 @@ function onUpdatePassword() {
     }
 }
 
-
-
-
+function onForgotPassword() {
+    var email = $('#email').val();
+    $.ajax({  
+        url:"../php/onforgotpassword.php",  
+        method:"POST",  
+        data: { email:email},  
+        success: function(response) {
+            var jsonData = JSON.parse(response);
+            if (jsonData.success){
+                let subject = "Forgot Password Code";
+                let body = "Greetings!, your code is: " + jsonData.code;
+                sendMail(email,subject,body);
+                $('.step_2').toggleClass('active');
+                document.getElementById("form-content-1").style.display = "none";
+                document.getElementById("form-content-2").style.display = "block";
+                alert("We have sent a code to your email");
+            }else{
+                alert(jsonData.error_msg);
+            }
+        },error: function() {
+            alert('System error: Ajax not working properly');
+        }  
+    }); 
+}
+function onCheckCode() {
+    var email = $('#email').val();
+    var code = $('#code').val();
+    console.log('email',email);
+    $.ajax({  
+        url:"../php/oncheckcode.php",  
+        method:"POST",  
+        data: { code:code,
+                email:email },  
+        success: function(response) {
+            var jsonData = JSON.parse(response);
+            if (jsonData.success){
+                let subject = "Forgot Password Temporary Password";
+                let body = "Greetings!, your temporary password is: " + jsonData.temp_password;
+                sendMail(email,subject,body);
+                goToLogin()
+                alert("We have sent you your new password to your email");
+            }else{
+                alert(jsonData.error_msg);
+            }
+        },error: function() {
+            alert('System error: Ajax not working properly');
+        }  
+    }); 
+}
+function sendMail(email,subject,body) {
+     $.ajax({  
+            url:"../php/sendemail.php",  
+            method:"POST",  
+            data: { email:email,
+                    subject:subject,
+                    body:body},
+            success: function(response) {
+                /* alert('Email sent'); */
+            },error: function() {
+                alert('System error: Ajax not working properly');
+            }  
+        }); 
+}
 
 
 

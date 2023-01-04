@@ -10,6 +10,12 @@
 body{
     background-color: #ffffff !important;
 }
+footer{
+    position: absolute;
+    bottom: 0;
+    background: #015c9f;
+    width: 100%;
+}
 .vertical-center {
     min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
     min-height: 100vh; /* These two lines are counted as one :-)       */
@@ -199,7 +205,58 @@ form{
 .cursor-pointer{
     cursor: pointer;
 }
-
+.progress-step {
+    margin: 0 auto;
+    text-align: center;
+    background-color: #8bd4f6;
+  }
+  .progress-step .steps {
+    position: relative;
+    top: 50%;
+    transform: translateY(30%);
+  }
+  .progress-step .steps ul {
+    list-style: none;
+  }
+  .progress-step .steps ul li {
+    display: inline-block;
+    width: 4rem;
+    height: 4rem;
+    line-height: 4rem;
+    border-radius: 100%;
+    background: #d8d8d8;
+    margin-right: 2rem;
+    position: relative;
+  }
+  .progress-step .steps ul li:first-child {
+    margin-left: unset;
+  }
+  .progress-step .steps ul li:first-child:before {
+    display: none;
+  }
+  .progress-step .steps ul li:before {
+    content: "";
+    width: 2.4rem;
+    background-color: #d8d8d8;
+    height: 2px;
+    position: absolute;
+    top: 2rem;
+    right: 3.9rem;
+  }
+  .progress-step .steps ul .active {
+    background: #03A9F4;
+    color: #fff;
+  }
+  .progress-step .steps ul .active:before {
+    background-color: #03A9F4;
+  }
+  .form-content-1, .form-content-2, .form-content-3{
+    width: 50%;
+    margin: 0 auto;
+  }
+  .form-content-2, .form-content-3{
+    display: none;
+  }
 @media (max-width: 576px) { 
     #thumbnail-container{
         grid-template-columns: 1fr;

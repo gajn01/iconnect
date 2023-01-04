@@ -11,7 +11,7 @@ include("connection.php");
     /* FIles input */
     $targetDir = "../uploads/";
     $fileName = basename($_FILES["module_file"]["name"]);
-    $targetFilePath = $targetDir . $fileName;
+    $targetFilePath = $targetDir. $fileName;
     $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
  
     $form_data = array();
@@ -21,6 +21,7 @@ include("connection.php");
         $last_id = $db->insert_id;
         $sql_file_upload = "INSERT into tbl_module_file (module_id,file_path) VALUES ('$last_id','$fileName')";
         if (mysqli_query($db, $sql_file_upload)) {
+            /*  */
             if(move_uploaded_file($_FILES["module_file"]["tmp_name"], $targetFilePath)){
                 $statusMsg = "The file ".$fileName. " has been uploaded successfully.";
                 $form_data['success'] = true;
@@ -36,7 +37,7 @@ include("connection.php");
         
     }else{
         $form_data['success'] = false;
-        $statusMsg = "Record upload failed, please try again.";
+        $statusMsg = "File upload failed, please try again.";
     }
     
     $form_data['success_msg'] = $statusMsg;
